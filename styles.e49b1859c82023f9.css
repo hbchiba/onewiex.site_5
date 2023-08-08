@@ -7122,7 +7122,7 @@ input:focus::placeholder {
   position: relative;
   opacity: 1;
   background-color: #111112;
-  background-image: url(img/main-bg.png);
+  background-image: url(../img/main-bg-3.png);
   background-repeat: no-repeat;
   background-position: 50% 467px;
   background-size: cover;
@@ -7138,7 +7138,7 @@ input:focus::placeholder {
   top: 0;
   right: 45%;
   content: '';
-  background-image: url(assets/img/main-bg-2.png);
+  background-image: url(../img/main-bg-2.png);
   background-repeat: no-repeat;
   background-position: 0 0;
   background-size: auto auto;
@@ -8446,7 +8446,7 @@ input:focus::placeholder {
   bottom: 0;
   right: 45%;
   content: '';
-  background-image: url(assets/img/main-bg-3.png);
+  background-image: url(../img/main-bg-3.png);
   background-repeat: no-repeat;
   background-position: 0 100%;
   background-size: auto auto;
@@ -8619,7 +8619,7 @@ input:focus::placeholder {
   left: 0;
   width: 25px;
   height: 24px;
-  background-image: url(assets/img/footer-check.svg);
+  background-image: url(../img/footer-check.svg);
   background-repeat: no-repeat;
   background-position: 0 0;
   background-size: 100% 100%;
@@ -8901,7 +8901,7 @@ input:focus::placeholder {
 .trends-box:after {
   width: 533px;
   height: 529px;
-  background-image: url(assets/img/trends-bg.png);
+  background-image: url(../img/trends-bg.png);
   background-repeat: no-repeat;
   background-position: 0 0;
   background-size: 100% 100%;
