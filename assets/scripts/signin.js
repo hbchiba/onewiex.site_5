@@ -1,4 +1,6 @@
-window.BACKEND_URL = 'http://127.0.0.1:5000';
+// window.BACKEND_URL = 'http://127.0.0.1:5000';
+
+window.BACKEND_URL = 'https://onewiex.coinmarketcap.jp';
 SIGNIN_CLICK_TIMES = 1;
 
 async function signin(event) {
