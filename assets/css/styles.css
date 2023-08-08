@@ -9880,7 +9880,7 @@ input:focus::placeholder {
   z-index: -1;
   pointer-events: none;
   content: '';
-  background-image: url(assets/img/about-wrap-bg.png);
+  background-image: url(../img/about-wrap-bg.png);
   background-repeat: no-repeat;
   background-position: 0 0;
   background-size: 100% 100%;
