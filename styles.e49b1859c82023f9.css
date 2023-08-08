@@ -12483,7 +12483,7 @@ input:focus::placeholder {
 }
 .cab-calc {
   width: 100%;
-  background-image: url(assets/img/cab-calc-bg.png);
+  background-image: url(../img/cab-calc-bg.png);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
