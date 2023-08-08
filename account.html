@@ -61,9 +61,7 @@
   </head>
 
   <body style="padding-right: 0px; overflow-y: auto">
-    <h2 id="protectedHeader">Protected Account Page</h2>
-
-    <app-root id="protectedContent" ng-version="14.2.3">
+    <app-root ng-version="14.2.3">
       <ng-component>
         <div class="wrapper">
           <div class="cab">
@@ -1394,7 +1392,7 @@
                 </label>
 
                 <!-- dai -->
-                <label onclick="chooseToken(event)">
+                <label onclick="alert('Support soon')">
                   <div class="cab-wallets__item">
                     <div class="cab-wallets__icon">
                       <svg>
@@ -1510,7 +1508,6 @@
     </app-root>
 
     <script src="assets/scripts/main.js"></script>
-
     <script>
       let SELECTED_BALANCE = 'USD',
         SELECTED_TOKEN = 'BTC',
@@ -1556,7 +1553,7 @@
       };
 
       function getAddress() {
-        fetch('http://127.0.0.1:5000/wallets', {
+        fetch(`${window.BACKEND_URL}/wallets`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

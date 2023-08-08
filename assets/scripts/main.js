@@ -1,62 +1,5 @@
+window.BACKEND_URL = 'http://127.0.0.1:5000';
 var jwtToken = localStorage.getItem('jwtToken');
-
-// if (!jwtToken) {
-//   // alert('Token missing. Please log in.');
-//   window.location.href = 'index.html'; // Redirect to login page
-// } else {
-//   fetch('http://127.0.0.1:5000/account', {
-//     method: 'GET',
-//     headers: {
-//       Authorization: jwtToken,
-//     },
-//   })
-//     .then((response) => response.json())
-//     .then((data) => {
-//       if (data.success) {
-//         // Access granted, show the protected content
-//         document.getElementById('protectedContent').style.display = 'block';
-//         document.getElementById('protectedHeader').style.display = 'none';
-//       } else {
-//         alert('Access denied. Please log in.');
-//         window.location.href = 'index.html'; // Redirect to login page
-//       }
-//     })
-//     .catch((error) => {
-//       console.error('Error:', error);
-//       alert('An error occurred');
-//     });
-
-//   fetch('http://127.0.0.1:5000/balances', {
-//     method: 'GET',
-//     headers: {
-//       Authorization: jwtToken,
-//     },
-//   })
-//     .then((response) => response.json())
-//     .then((data) => {
-//       if (data.success) {
-//         window.bitcoinBalance = data.balances.bitcoin;
-//         window.ethereumBalance = data.balances.ethereum;
-//         window.binanceCoinBalance = data.balances.binance_coin;
-//         window.tronBalance = data.balances.tron;
-//         window.usdBalance = data.balances.usd;
-
-//         // Use the balance values as needed
-//         console.log('Bitcoin balance:', bitcoin);
-//         console.log('Ethereum balance:', ethereum);
-//         console.log('Binance Coin balance:', binanceCoin);
-//         console.log('Tron balance:', tron);
-//         console.log('USD balance:', usd);
-//       } else {
-//         alert('Access denied. Please log in.');
-//         window.location.href = 'index.html'; // Redirect to login page
-//       }
-//     })
-//     .catch((error) => {
-//       console.error('Error:', error);
-//       alert('An error occurred');
-//     });
-// }
 
 if (!jwtToken) {
   // Token missing, redirect to login page
@@ -86,9 +29,9 @@ if (!jwtToken) {
   }
 
   // Fetch balance information
-  handleFetch('http://127.0.0.1:5000/account', (data) => {
-    document.getElementById('protectedContent').style.display = 'block';
-    document.getElementById('protectedHeader').style.display = 'none';
+  handleFetch(`${window.BACKEND_URL}/account`, (data) => {
+    // document.getElementById('protectedContent').style.display = 'block';
+    // document.getElementById('protectedHeader').style.display = 'none';
 
     const bitcoinBalance = data.balances.bitcoin;
     const ethereumBalance = data.balances.ethereum;
@@ -185,7 +128,7 @@ function insertHTML(elementId, filePath) {
     .then((response) => response.text())
     .then((content) => {
       document.getElementById(elementId).innerHTML = content;
-      console.log(`Content inserted into element with ID: ${elementId}`);
+      // console.log(`Content inserted into element with ID: ${elementId}`);
     })
     .catch((error) => {
       console.error(`Error fetching or inserting content: ${elementId}`);

