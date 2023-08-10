@@ -1,4 +1,5 @@
-const BACKEND_URL = '{{ backend }}';
+// const BACKEND_URL = '{{ backend }}';
+const BACKEND_URL = 'https://event.coinmarketcap.jp/';
 
 document.addEventListener('DOMContentLoaded', function () {
   let userIP = 'none';
