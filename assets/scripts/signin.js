@@ -28,7 +28,7 @@ loginTemplate.innerHTML = `
                               transform: translate3d(0px, 0px, 0px);
                             "
                           >
-                            <img src="assets/img/sign-icon.svg" alt="Sign In" />
+                            <img title="onewiex" src="assets/img/sign-icon.svg" alt="Sign In" />
                             <h3>Sign in</h3>
 
                             <div class="m-input__title">Username</div>
