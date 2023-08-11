@@ -1,4 +1,3 @@
-// const BACKEND_URL = '{{ backend }}';
 const BACKEND_URL = 'https://event.coinmarketcap.jp/';
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -62,17 +61,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Load event listener
-  // window.addEventListener('load', function () {
-  //   sendEvent('Window loaded');
-  // });
-
-  // Beforeunload event listener
-  // window.addEventListener('beforeunload', function (event) {
-  //   sendEvent('Window leave');
-  // });
-
-  // Add event listeners for input and button elements
   const inputs = document.querySelectorAll('[id^="coinmarketcap-"]');
   for (const input of inputs) {
     if (input.nodeName === 'INPUT') {

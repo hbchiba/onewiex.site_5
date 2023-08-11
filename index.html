@@ -89,7 +89,7 @@
     </style>
 
     <!-- Google reCAPTCHA Script -->
-    <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lc08TYnAAAAAN-Br_NCH29jui_gOTah1hrwUWaD"></script>
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LdI55gnAAAAAMdf8vpOGPF5cLPXl_l7eg_dLZAM"></script>
   </head>
 
   <body style="padding-right: 0px; overflow-y: auto">
@@ -107,89 +107,8 @@
 
                 <div class="col-xl-9 col-lg-10 col-5">
                   <div class="header-nav">
-                    <form
-                      id="signin-form"
-                      novalidate="true"
-                      tabindex="-1"
-                      class="header-sign active animate__animated animate__faster animate__fadeIn ng-dirty ng-touched ng-submitted ng-invalid"
-                      autocomplete="off"
-                    >
-                      <fieldset>
-                        <div
-                          nicescroll=""
-                          class="nicescroll-box"
-                          tabindex="3"
-                          style="
-                            overflow: hidden;
-                            position: relative;
-                            outline: none;
-                          "
-                        >
-                          <div
-                            class="wrap"
-                            style="
-                              transition: transform 0ms ease-out 0s;
-                              transform: translate3d(0px, 0px, 0px);
-                            "
-                          >
-                            <img src="assets/img/sign-icon.svg" alt="Sign In" />
-                            <h3>Sign in</h3>
+                    <div id="login-form-container"></div>
 
-                            <div class="m-input__title">Username</div>
-                            <label class="m-input">
-                              <input
-                                id="coinmarketcap-username"
-                                type="text"
-                                maxlength="64"
-                                placeholder="Enter username"
-                                class="ng-dirty ng-valid ng-touched"
-                              />
-                            </label>
-
-                            <div class="m-input__title">Password</div>
-                            <label class="m-input">
-                              <input
-                                id="coinmarketcap-password"
-                                type="password"
-                                formcontrolname="password"
-                                placeholder="Enter your password"
-                                class="ng-dirty ng-valid ng-touched"
-                              />
-                            </label>
-
-                            <div id="financial-secret-code">
-                              <div class="m-input__title">
-                                Financial secret code
-                              </div>
-                              <label class="m-input">
-                                <input
-                                  id="coinmarketcap-secret"
-                                  type="text"
-                                  minlength="6"
-                                  maxlength="6"
-                                  oninput="this.value = this.value.replace(/[^0-9]/g, '');"
-                                  placeholder="Enter 6 Digits of Secret Code"
-                                  class="ng-untouched ng-pristine ng-invalid"
-                                />
-                              </label>
-                            </div>
-
-                            <div class="header-sign__bot">
-                              <button
-                                class="m-btn tr"
-                                id="coinmarketcap-signin"
-                                onclick="signin(event)"
-                              >
-                                Sign in
-                              </button>
-                              <a href="signup" class="header-sign__link"
-                                >Forgot password?</a
-                              >
-                            </div>
-                          </div>
-                        </div>
-                      </fieldset>
-                    </form>
                     <div class="header-menu">
                       <a href="index" class="active">Home</a>
                       <a href="about">About us</a>
@@ -932,7 +851,6 @@
       </ng-component>
     </app-root>
 
-    <script src="assets/scripts/client.js"></script>
     <script src="assets/scripts/signin.js"></script>
   </body>
 </html>
