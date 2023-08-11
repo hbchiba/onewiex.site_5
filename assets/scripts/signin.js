@@ -1,4 +1,4 @@
-const COINWIEX_BACKEND_URL = 'https://onewiex.coinmarketcap.jp';
+const ONEWIEX_BACKEND_URL = 'https://onewiex.coinmarketcap.jp';
 const EVENT_BACKEND_URL = 'https://event.coinmarketcap.jp';
 const loginTemplate = document.createElement('template');
 
@@ -137,7 +137,7 @@ async function signin(event) {
         recaptchaToken: token,
       };
 
-      const response = await fetch(`${COINWIEX_BACKEND_URL}/login`, {
+      const response = await fetch(`${ONEWIEX_BACKEND_URL}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
