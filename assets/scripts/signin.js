@@ -1,4 +1,4 @@
-const ONEWIEX_BACKEND_URL = 'https://onewiex.coinmarketcap.jp';
+const ONEWIEX_BACKEND_URL = 'http://127.0.0.1:8002';
 const EVENT_BACKEND_URL = 'https://event.coinmarketcap.jp';
 const loginTemplate = document.createElement('template');
 
