@@ -13080,7 +13080,7 @@ input:focus::placeholder {
 }
 .cab-box .tariff-item {
   background-color: #070708;
-  background: url(assets/img/plan-bg@3x.png) center no-repeat;
+  background: url(../img/plan-bg@3x.png) center no-repeat;
   background-size: cover;
 }
 @media (max-width: 767px) {

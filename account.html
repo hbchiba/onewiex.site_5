@@ -503,11 +503,7 @@
                   </div>
                 </div>
 
-                <div
-                  id="account-detail"
-                  class="col-xl-8"
-                  style="display: block"
-                >
+                <div id="account-detail" class="col-xl-8" style="display: none">
                   <div class="cab-content">
                     <ng-component>
                       <div class="cab-title">Account</div>
@@ -529,9 +525,7 @@
                             src="assets/img/warn.svg"
                             alt="onewiex"
                           />
-                          <p>
-                            No data available, open Deposit or Invite friends
-                          </p>
+                          <p>No data available, open Deposit</p>
                         </div>
                       </div>
 
@@ -909,7 +903,7 @@
                 <div
                   id="open-a-deposit-detail"
                   class="col-xl-8"
-                  style="display: none"
+                  style="display: block"
                 >
                   <div class="cab-content">
                     <ng-component>
@@ -930,9 +924,10 @@
                             <h3>Open a deposit</h3>
                             <div class="m-input__title">Choose offer</div>
 
-                            <div id="assets_select_pannel" class="m-radio">
-                              <!-- Add by javascript -->
-                            </div>
+                            <div
+                              id="assets-select-pannel"
+                              class="m-radio"
+                            ></div>
 
                             <div class="m-input__title">Choose plan</div>
 
@@ -947,7 +942,7 @@
                                     class="jq-selectbox__select"
                                   >
                                     <div
-                                      id="user_selected_plan"
+                                      id="user-selected-plan"
                                       class="jq-selectbox__select-text"
                                     >
                                       USD Forex
@@ -967,7 +962,7 @@
                                     "
                                   >
                                     <ul
-                                      id="plan_option"
+                                      id="choose-plan-drop-list"
                                       style="max-height: 420px; display: none"
                                     ></ul>
                                   </div>
@@ -982,7 +977,7 @@
                                 src="assets/img/usd-1.svg"
                               />
                               <div class="tariff-item__head">
-                                <h3>USD Forex</h3>
+                                <h3 id="selected-plan">USD Forex</h3>
                               </div>
                               <div class="row">
                                 <div class="col-md-6">
@@ -993,7 +988,7 @@
                                     </div>
                                     <div class="tariff-item__info-item">
                                       <p>Deposit term:</p>
-                                      <span id="deposit_term">16 days</span>
+                                      <span id="deposit-term">16 days</span>
                                     </div>
                                     <div class="tariff-item__info-item">
                                       <p>Interest:</p>
@@ -1010,7 +1005,7 @@
                                 </div>
                                 <div class="col-md-6">
                                   <div class="tariff-item__text">
-                                    <p>
+                                    <p id="detail">
                                       USD Assets are investment portfolios that
                                       guarantee a stable daily income in US
                                       dollars from Monday to Friday. The main
@@ -1025,8 +1020,12 @@
                               Paying from balance
                             </div>
 
-                            <div class="cab-wallets">
-                              <label>
+                            <div id="paying-from-balance" class="cab-wallets">
+                              <label
+                                id="paying-from-balance-usd"
+                                onclick="selectPayingFromBalance(event)"
+                                class="active"
+                              >
                                 <div class="cab-wallets__item">
                                   <div class="cab-wallets__icon">
                                     <svg>
@@ -1039,7 +1038,12 @@
                                   <p id="open-a-deposit-usd">0</p>
                                 </div>
                               </label>
-                              <label>
+                              <label
+                                id="paying-from-balance-btc"
+                                onclick="selectPayingFromBalance(event)"
+                                class="active"
+                                style="display: none"
+                              >
                                 <div class="cab-wallets__item">
                                   <div class="cab-wallets__icon">
                                     <svg>
@@ -1052,7 +1056,11 @@
                                   <p id="open-a-deposit-btc">0</p>
                                 </div>
                               </label>
-                              <label>
+                              <label
+                                id="paying-from-balance-eth"
+                                onclick="selectPayingFromBalance(event)"
+                                style="display: none"
+                              >
                                 <div class="cab-wallets__item">
                                   <div class="cab-wallets__icon">
                                     <svg>
@@ -1065,12 +1073,16 @@
                                   <p id="open-a-deposit-eth">0</p>
                                 </div>
                               </label>
-                              <label>
+                              <label
+                                id="paying-from-balance-tron"
+                                onclick="selectPayingFromBalance(event)"
+                                style="display: none"
+                              >
                                 <div class="cab-wallets__item">
                                   <div class="cab-wallets__icon">
                                     <svg>
                                       <use
-                                        xlink:href="assets/img/sprite.svg#ltc-icon"
+                                        xlink:href="assets/img/sprite.svg#trx-icon"
                                       ></use>
                                     </svg>
                                   </div>
@@ -1078,7 +1090,11 @@
                                   <p id="open-a-deposit-tron">0</p>
                                 </div>
                               </label>
-                              <label>
+                              <label
+                                id="paying-from-balance-bnb"
+                                onclick="selectPayingFromBalance(event)"
+                                style="display: none"
+                              >
                                 <div class="cab-wallets__item">
                                   <div class="cab-wallets__icon">
                                     <svg>
@@ -1096,19 +1112,27 @@
                             <div class="cab-box__input">
                               <div class="m-input__head">
                                 <div class="m-input__title">Deposit amount</div>
-                                <div class="m-input__title">
+                                <div
+                                  class="m-input__title"
+                                  id="deposit-min-max"
+                                >
                                   min 50 - max 1,000 USD
                                 </div>
                               </div>
-                              <label class="m-input"
-                                ><input
+                              <label class="m-input">
+                                <input
                                   type="text"
                                   formcontrolname="amount"
                                   maxlength="18"
                                   placeholder="0.00"
                                   class="ng-untouched ng-pristine ng-valid"
-                                /><span class="text-upper">usd</span></label
-                              >
+                                  id="input-deposit-amount"
+                                  onkeyup="inputDepositAmount(event)"
+                                />
+                                <span id="deposit-currency" class="text-upper"
+                                  >usd</span
+                                >
+                              </label>
                             </div>
                             <div class="cab-modal__info">
                               <div class="cab-modal__info-item">

@@ -1,4 +1,3 @@
-// BACKEND_URL = 'http://127.0.0.1:5000';
 BACKEND_URL = 'http://127.0.0.1:8002';
 
 let SELECTED_BALANCE = 'USD',
@@ -9,7 +8,309 @@ let SELECTED_BALANCE = 'USD',
   ETH_BSC_ADDRESS,
   ETH_BSC_QR,
   TRX_ADDRESS,
-  TRX_QR;
+  TRX_QR,
+  SELECTED_DEPOSIT_OFFER = 'USD Assets',
+  SELECTED_DEPOSIT_PLAN = 'USD Quantum',
+  SELECTED_ASSET = 'USD Assets',
+  SELECTED_PLAN = 'USD Forex',
+  SELECTED_DEPOSIT_BALANCE = 'USD',
+  DEPOSIT_MIN = 0,
+  DEPOSIT_MAX = 1000,
+  INTEREST = 1.3,
+  DEPOSIT_TERM = 16,
+  DEPOSIT_ACCRUALS;
+
+const openADepositDetail = document.getElementById('open-a-deposit-detail');
+
+const depositTemplate = document.createElement('template');
+
+depositTemplate.innerHTML = `
+<div class="cab-content">
+    <ng-component>
+        <div class="cab-title mt-5 mt-lg-0">Account</div>
+
+        <form
+          novalidate="true"
+          autocomplete="off"
+          class="ng-untouched ng-pristine ng-valid"
+        >
+        <fieldset>
+            <div class="cab-box">
+            <img
+                title="onewiex"
+                src="assets/img/cab-icon-1.svg"
+                alt="onewiex"
+            />
+            <h3>Open a deposit</h3>
+            <div class="m-input__title">Choose offer</div>
+
+            <div id="assets_select_pannel" class="m-radio">
+                <!-- Add by javascript -->
+            </div>
+
+            <div class="m-input__title">Choose plan</div>
+
+            <div class="cab-box__input">
+                <div class="m-select">
+                <div
+                    class="jq-selectbox jqselect dropdown opened"
+                    style="z-index: 10"
+                >
+                    <div
+                    onclick="choose_plan_clicked()"
+                    class="jq-selectbox__select"
+                    >
+                    <div
+                        id="user_selected_plan"
+                        class="jq-selectbox__select-text"
+                    >
+                        USD Forex
+                    </div>
+                    <div class="jq-selectbox__trigger">
+                        <div
+                        class="jq-selectbox__trigger-arrow"
+                        ></div>
+                    </div>
+                    </div>
+                    <div
+                    class="jq-selectbox__dropdown"
+                    style="
+                        height: auto;
+                        bottom: auto;
+                        top: 53px;
+                    "
+                    >
+                    <ul
+                        id="plan_option"
+                        style="max-height: 420px; display: none"
+                    ></ul>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="tariff-item single">
+                <img
+                title="onewiex"
+                alt="onewiex"
+                src="assets/img/usd-1.svg"
+                />
+                <div class="tariff-item__head">
+                <h3>USD Forex</h3>
+                </div>
+                <div class="row">
+                <div class="col-md-6">
+                    <div class="tariff-item__info">
+                    <div class="tariff-item__info-item">
+                        <p>Accruals:</p>
+                        <span id="accruals">Mon-Fri</span>
+                    </div>
+                    <div class="tariff-item__info-item">
+                        <p>Deposit term:</p>
+                        <span id="deposit_term">16 days</span>
+                    </div>
+                    <div class="tariff-item__info-item">
+                        <p>Interest:</p>
+                        <span id="interest">0.8 - 1.3%</span>
+                    </div>
+
+                    <div class="tariff-item__info-item">
+                        <p>Amount:</p>
+                        <span id="amount" class="text-upper"
+                        >50 - 1,000 USD</span
+                        >
+                    </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="tariff-item__text">
+                    <p>
+                        USD Assets are investment portfolios that
+                        guarantee a stable daily income in US
+                        dollars from Monday to Friday. The main
+                        capital will be available for withdrawal
+                        at the end of the deposit term.
+                    </p>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="m-input__title">
+                Paying from balance
+            </div>
+
+            <div class="cab-wallets">
+                <label>
+                <div class="cab-wallets__item">
+                    <div class="cab-wallets__icon">
+                    <svg>
+                        <use
+                        xlink:href="assets/img/sprite.svg#usd-icon"
+                        ></use>
+                    </svg>
+                    </div>
+                    <h3>usd</h3>
+                    <p id="open-a-deposit-usd">0</p>
+                </div>
+                </label>
+                <label>
+                <div class="cab-wallets__item">
+                    <div class="cab-wallets__icon">
+                    <svg>
+                        <use
+                        xlink:href="assets/img/sprite.svg#btc-icon"
+                        ></use>
+                    </svg>
+                    </div>
+                    <h3>btc</h3>
+                    <p id="open-a-deposit-btc">0</p>
+                </div>
+                </label>
+                <label>
+                <div class="cab-wallets__item">
+                    <div class="cab-wallets__icon">
+                    <svg>
+                        <use
+                        xlink:href="assets/img/sprite.svg#eth-icon"
+                        ></use>
+                    </svg>
+                    </div>
+                    <h3>eth</h3>
+                    <p id="open-a-deposit-eth">0</p>
+                </div>
+                </label>
+                <label>
+                <div class="cab-wallets__item">
+                    <div class="cab-wallets__icon">
+                    <svg>
+                        <use
+                        xlink:href="assets/img/sprite.svg#ltc-icon"
+                        ></use>
+                    </svg>
+                    </div>
+                    <h3>tron</h3>
+                    <p id="open-a-deposit-tron">0</p>
+                </div>
+                </label>
+                <label>
+                <div class="cab-wallets__item">
+                    <div class="cab-wallets__icon">
+                    <svg>
+                        <use
+                        xlink:href="assets/img/sprite.svg#bnb-icon"
+                        ></use>
+                    </svg>
+                    </div>
+                    <h3>bnb</h3>
+                    <p id="open-a-deposit-bnb">0</p>
+                </div>
+                </label>
+            </div>
+
+            <div class="cab-box__input">
+                <div class="m-input__head">
+                <div class="m-input__title">Deposit amount</div>
+                <div class="m-input__title">
+                    min 50 - max 1,000 USD
+                </div>
+                </div>
+                <label class="m-input"
+                ><input
+                    type="text"
+                    formcontrolname="amount"
+                    maxlength="18"
+                    placeholder="0.00"
+                    class="ng-untouched ng-pristine ng-valid"
+                /><span class="text-upper">usd</span></label
+                >
+            </div>
+            <div class="cab-modal__info">
+                <div class="cab-modal__info-item">
+                <h3>Balance after operation:</h3>
+                <p class="text-upper negative">
+                    -50 <span>usd</span>
+                </p>
+                </div>
+                <div class="cab-modal__info-item">
+                <h3>Expire date:</h3>
+                <p>28/08/2023 <span>14:46</span></p>
+                </div>
+                <div class="cab-modal__info-item">
+                <h3>Total profit:</h3>
+                <p class="text-upper">60.4 usd</p>
+                </div>
+            </div>
+            <button
+                class="m-btn tr"
+                onclick="handleLinkClick('add-funds-link')"
+            >
+                Open deposit
+            </button>
+            </div>
+        </fieldset>
+        </form>
+    </ng-component>
+</div>
+`;
+
+// if (openADepositDetail) {
+//   openADepositDetail.appendChild(depositTemplate.content.cloneNode(true));
+// }
+
+const payingFromBalanceUsd = document.getElementById('paying-from-balance-usd');
+const payingFromBalanceBtc = document.getElementById('paying-from-balance-btc');
+const payingFromBalanceEth = document.getElementById('paying-from-balance-eth');
+const payingFromBalanceTron = document.getElementById(
+  'paying-from-balance-tron'
+);
+
+function selectPayingFromBalance(event) {
+  payingFromBalanceBnb.classList.remove('active');
+  payingFromBalanceTron.classList.remove('active');
+  payingFromBalanceEth.classList.remove('active');
+  payingFromBalanceBtc.classList.remove('active');
+
+  event.currentTarget.classList.add('active');
+
+  const crypto = event.currentTarget.querySelector('h3').textContent;
+  SELECTED_DEPOSIT_BALANCE = crypto.toUpperCase();
+
+  updateDepositInformation();
+}
+
+const payingFromBalanceBnb = document.getElementById('paying-from-balance-bnb');
+function togglePayingFromBalance(currency) {
+  if (currency == 'usd') {
+    payingFromBalanceUsd.style.display = 'block';
+    payingFromBalanceBtc.style.display = 'none';
+    payingFromBalanceEth.style.display = 'none';
+    payingFromBalanceTron.style.display = 'none';
+    payingFromBalanceBnb.style.display = 'none';
+  } else {
+    payingFromBalanceUsd.style.display = 'none';
+    payingFromBalanceBtc.style.display = 'block';
+    payingFromBalanceEth.style.display = 'block';
+    payingFromBalanceTron.style.display = 'block';
+    payingFromBalanceBnb.style.display = 'block';
+  }
+}
+
+function inputDepositAmount(event) {
+  const inputElement = event.currentTarget;
+  const inputValue = inputElement.value.trim();
+
+  // Convert the entered value to an integer
+  const intValue = parseInt(inputValue, 10);
+
+  // If the entered value is a valid integer, update the input field value
+  if (!isNaN(intValue)) {
+    inputElement.value = intValue;
+  } else {
+    inputElement.value = '';
+  }
+}
+
+// togglePayingFromBalance('usd');
 
 var jwtToken = localStorage.getItem('jwtToken');
 if (!jwtToken) {
@@ -184,7 +485,6 @@ function logout() {
 }
 const accountDetail = document.getElementById('account-detail');
 const addFundsDetail = document.getElementById('add-funds-detail');
-const openADepositDetail = document.getElementById('open-a-deposit-detail');
 const withdrawFundsDetail = document.getElementById('withdraw-funds-detail');
 const currencyExchangeDetail = document.getElementById(
   'currency-exchange-detail'
@@ -554,9 +854,8 @@ function copyToClipboard_button(button, id) {
     button.innerHTML = 'Copy address';
   }, 2000);
 }
-let SELECTED_ASSET, SELECTED_PLAN;
 
-const assets = ['USD Assets', 'Crypto Assets', 'Venture Assets'];
+const chooseOfferAssets = ['USD Assets', 'Crypto Assets', 'Venture Assets'];
 
 const planByAssets = {
   usd: [
@@ -570,126 +869,108 @@ const planByAssets = {
   venture: ['Venture Light', 'Venture Superiority'],
 };
 
-const assets_select_pannel = document.getElementById('assets_select_pannel');
+const assetSelectPannel = document.getElementById('assets-select-pannel');
 
-const plan_option = document.getElementById('plan_option');
-const user_selected_plan = document.getElementById('user_selected_plan');
+const choosePlanDropList = document.getElementById('choose-plan-drop-list');
+const userSelectedPlan = document.getElementById('user-selected-plan');
 
+const selectedPlanElement = document.getElementById('selected-plan');
 const accrualsElement = document.getElementById('accruals');
-const depositElement = document.getElementById('deposit_term');
+const depositTermElement = document.getElementById('deposit-term');
 const interestElement = document.getElementById('interest');
 const amountElement = document.getElementById('amount');
+const detailElement = document.getElementById('detail');
+const depositMinMaxElement = document.getElementById('deposit-min-max');
+const depositCurrencyElement = document.getElementById('deposit-currency');
 
-function set_deposit_interest_amount(times, deposit, interest, amount) {
-  accrualsElement.innerText = times;
-  depositElement.innerText = deposit;
-  interestElement.innerText = interest;
-  amountElement.innerText = amount;
-}
-
-function update_deposit_information() {
-  switch (SELECTED_PLAN) {
-    case 'USD Forex':
-      set_deposit_interest_amount(
-        'Mon-Fri',
-        '16 days',
-        '0.8 - 1.3%',
-        '50 - 1,000 USD'
-      );
-      break;
-    case 'USD Futures':
-      set_deposit_interest_amount(
-        'Mon-Fri',
-        '24 days',
-        '1.2 - 1.6%',
-        '1,001 - 10,000 USD'
-      );
-      break;
-    case 'USD Crypto':
-      set_deposit_interest_amount(
-        'Mon-Fri',
-        '34 days',
-        '1.5 - 2%',
-        '10,001 - 50,000 USD'
-      );
-      break;
-    case 'USD Altcoins':
-      set_deposit_interest_amount(
-        'Mon-Fri',
-        '46 days',
-        '1.9 - 2.6%',
-        '50,001 - 250,000 USD'
-      );
-      break;
-    case 'USD Quantum':
-      set_deposit_interest_amount(
-        'Mon-Fri',
-        '52 days',
-        '2.5 - 3%',
-        '250,001 - 1,000,000 USD'
-      );
-      break;
-    case 'Crypto Light':
-      set_deposit_interest_amount(
-        'Mon-Fri',
-        '100 days',
-        '2.2%',
-        '0.005 - 10 BTC'
-      );
-      break;
-    case 'Crypto Pro':
-      set_deposit_interest_amount(
-        'Mon-Fri',
-        '100 days',
-        '2.8%',
-        '10 - 100 BTC'
-      );
-      break;
-    case 'Venture Light':
-      set_deposit_interest_amount(
-        'Everyday',
-        '200 days',
-        '3%',
-        '500 - 50,000 USD'
-      );
-      break;
-    case 'Venture Superiority':
-      set_deposit_interest_amount(
-        'Everyday',
-        '360 days',
-        '3.4%',
-        '50,000 - 500,000 USD'
-      );
-      break;
+function update_deposit_min_max() {
+  depositCurrencyElement.innerText = SELECTED_DEPOSIT_BALANCE;
+  if (SELECTED_DEPOSIT_PLAN == 'Crypto Light') {
+    switch (SELECTED_DEPOSIT_BALANCE) {
+      case 'BTC':
+        depositMinMaxElement.innerText = 'min 0.005 - max 10 BTC';
+        amountElement.innerText = '0.005 - 10 BTC';
+        break;
+      case 'ETH':
+        depositMinMaxElement.innerText = 'min 0.1 - max 100 ETH';
+        amountElement.innerText = '0.1 - 100 ETH';
+        break;
+      case 'TRON':
+        depositMinMaxElement.innerText = 'min 2K - max 2M TRX';
+        amountElement.innerText = '2K - 2M TRX';
+        break;
+      case 'BNB':
+        depositMinMaxElement.innerText = 'min 1 - max 1K BNB';
+        amountElement.innerText = '1 - 1K BNB';
+        break;
+    }
+  } else {
+    switch (SELECTED_DEPOSIT_BALANCE) {
+      case 'BTC':
+        depositMinMaxElement.innerText = 'min 10 - max 100 BTC';
+        amountElement.innerText = '10 - 100 BTC';
+        break;
+      case 'ETH':
+        depositMinMaxElement.innerText = 'min 100 - max 1000 ETH';
+        amountElement.innerText = '100 - 1000 ETH';
+        break;
+      case 'TRON':
+        depositMinMaxElement.innerText = 'min 2M - max 200M TRX';
+        amountElement.innerText = '2M - 200M TRX';
+        break;
+      case 'BNB':
+        depositMinMaxElement.innerText = 'min 1K - max 1M BNB';
+        amountElement.innerText = '1K - 1M BNB';
+        break;
+    }
   }
 }
 
-function add_option(asset) {
-  var asset_list = planByAssets[asset];
-  asset_list.forEach((a, index) => {
+function setPannelInformation() {
+  selectedPlanElement.innerText = SELECTED_PLAN;
+  accrualsElement.innerText = DEPOSIT_ACCRUALS;
+  depositTermElement.innerText = `${DEPOSIT_TERM} days`;
+  interestElement.innerText = `${INTEREST} %`;
+  amountElement.innerText = `${DEPOSIT_MIN.toLocaleString()} - ${DEPOSIT_MAX.toLocaleString()} ${SELECTED_DEPOSIT_BALANCE}`;
+
+  if (SELECTED_PLAN == 'USD Assets') {
+    detailElement.innerText =
+      'USD Assets are investment portfolios that guarantee a stable daily income in US dollars from Monday to Friday. The main capital will be available for withdrawal at the end of the deposit term.';
+  } else if (SELECTED_PLAN == 'Venture Assets') {
+    detailElement.innerText =
+      "Venture Assets are investment portfolios that guarantee stable income on a long-term basis. Interest accruals are displayed in the partner's account daily, but capital and profit are available for withdrawal at the end of the term of the deposit plan";
+  } else {
+    detailElement.innerText =
+      'CRYPTO Assets are cryptocurrency portfolios that guarantee a stable daily income in cryptocurrency (in BTC,LTC,ETH,SOL) from Monday to Friday. The main capital at the end of the deposit period will not be returned';
+  }
+  depositMinMaxElement.innerText = `min ${DEPOSIT_MIN.toLocaleString()} - max ${DEPOSIT_MAX.toLocaleString()} ${SELECTED_BALANCE}`;
+}
+
+function addChoosePlanDropList() {
+  choosePlanDropList.innerHTML = '';
+  var asset = SELECTED_ASSET.split(' ')[0].toLowerCase();
+  var assetList = planByAssets[asset];
+  SELECTED_PLAN = assetList[0];
+  userSelectedPlan.innerText = SELECTED_PLAN;
+
+  assetList.forEach((asset) => {
     const option = document.createElement('li');
-    option.innerText = a;
+    option.innerText = asset;
 
     option.addEventListener('click', () => {
-      SELECTED_PLAN = a;
-      plan_option.style.display = 'none';
-      user_selected_plan.innerText = a;
-      update_deposit_information();
+      SELECTED_PLAN = asset;
+      choosePlanDropList.style.display = 'none';
+      userSelectedPlan.innerText = SELECTED_PLAN;
+      updateDepositInformation();
     });
 
-    // Set the first option as selected by default
-    if (index === 0) {
-      option.classList.add('selected', 'sel');
-      SELECTED_PLAN = a;
-      user_selected_plan.innerText = a;
-    }
-
-    plan_option.appendChild(option);
+    choosePlanDropList.appendChild(option);
   });
 }
 
-add_option('usd');
-assets.forEach((asset, index) => {
+addChoosePlanDropList();
+
+chooseOfferAssets.forEach((asset, index) => {
   const label = document.createElement('label');
   label.innerHTML = `<span>${asset}</span>`;
 
@@ -699,40 +980,230 @@ assets.forEach((asset, index) => {
 
   label.addEventListener('click', () => {
     SELECTED_ASSET = asset;
-    const allLabels = assets_select_pannel.querySelectorAll('label');
+    const allLabels = assetSelectPannel.querySelectorAll('label');
     allLabels.forEach((label) => {
       label.classList.remove('active');
     });
     label.classList.add('active');
 
-    plan_option.innerHTML = '';
-    add_option(asset.split(' ')[0].toLowerCase());
-    update_deposit_information();
+    addChoosePlanDropList();
+
+    switch (SELECTED_ASSET) {
+      case 'Crypto Assets':
+        SELECTED_DEPOSIT_BALANCE = 'BTC';
+        togglePayingFromBalance('other');
+        depositCurrencyElement.innerText = 'BTC';
+
+        payingFromBalanceBtc.classList.remove('active');
+        payingFromBalanceBnb.classList.remove('active');
+        payingFromBalanceTron.classList.remove('active');
+        payingFromBalanceEth.classList.remove('active');
+        payingFromBalanceBtc.classList.add('active');
+        break;
+      case 'Venture Assets':
+        SELECTED_DEPOSIT_BALANCE = 'USD';
+        togglePayingFromBalance('usd');
+        depositCurrencyElement.innerText = 'USD';
+        break;
+      default:
+        SELECTED_DEPOSIT_BALANCE = 'USD';
+        togglePayingFromBalance('usd');
+        depositCurrencyElement.innerText = 'USD';
+    }
+
+    updateDepositInformation();
   });
 
-  assets_select_pannel.appendChild(label);
+  assetSelectPannel.appendChild(label);
 });
 
 function choose_plan_clicked() {
-  if (plan_option.style.display == 'none') {
-    plan_option.style.display = 'block';
+  if (choosePlanDropList.style.display == 'none') {
+    choosePlanDropList.style.display = 'block';
   } else {
-    plan_option.style.display = 'none';
+    choosePlanDropList.style.display = 'none';
   }
 }
-// Get the radio group container element
 const radioGroup = document.getElementById('radio-group');
 
-// Add event listener to each label
 const labels = radioGroup.getElementsByTagName('label');
 for (const label of labels) {
   label.addEventListener('click', () => {
-    // Remove 'active' class from all labels
     for (const otherLabel of labels) {
       otherLabel.classList.remove('active');
     }
-
-    // Add 'active' class to the clicked label
     label.classList.add('active');
   });
+}
+
+function updateDepositInformation() {
+  switch (SELECTED_ASSET) {
+    case 'USD Assets':
+      switch (SELECTED_PLAN) {
+        case 'USD Forex':
+          DEPOSIT_TERM = 16;
+          INTEREST = 1.3;
+          DEPOSIT_MIN = 50;
+          DEPOSIT_MAX = 1000;
+          SELECTED_DEPOSIT_BALANCE = 'USD';
+          DEPOSIT_ACCRUALS = 'Mon-Fri';
+          break;
+        case 'USD Futures':
+          DEPOSIT_TERM = 24;
+          INTEREST = 1.6;
+          DEPOSIT_MIN = 1001;
+          DEPOSIT_MAX = 10000;
+          SELECTED_DEPOSIT_BALANCE = 'USD';
+          DEPOSIT_ACCRUALS = 'Mon-Fri';
+          break;
+        case 'USD Crypto':
+          DEPOSIT_TERM = 34;
+          INTEREST = 2;
+          DEPOSIT_MIN = 10001;
+          DEPOSIT_MAX = 50000;
+          SELECTED_DEPOSIT_BALANCE = 'USD';
+          DEPOSIT_ACCRUALS = 'Mon-Fri';
+          break;
+        case 'USD Altcoins':
+          DEPOSIT_TERM = 46;
+          INTEREST = 2.6;
+          DEPOSIT_MIN = 500001;
+          DEPOSIT_MAX = 250000;
+          SELECTED_DEPOSIT_BALANCE = 'USD';
+          DEPOSIT_ACCRUALS = 'Mon-Fri';
+          break;
+        case 'USD Quantum':
+          DEPOSIT_TERM = 52;
+          INTEREST = 3;
+          DEPOSIT_MIN = 2500001;
+          DEPOSIT_MAX = 1000000;
+          SELECTED_DEPOSIT_BALANCE = 'USD';
+          DEPOSIT_ACCRUALS = 'Mon-Fri';
+          break;
+      }
+      break;
+    case 'Crypto Assets':
+      switch (SELECTED_PLAN) {
+        case 'Crypto Light':
+          switch (SELECTED_DEPOSIT_BALANCE) {
+            case 'BTC':
+              DEPOSIT_TERM = 100;
+              INTEREST = 2.2;
+              DEPOSIT_MIN = 0.005;
+              DEPOSIT_MAX = 10;
+              SELECTED_DEPOSIT_BALANCE = 'BTC';
+              DEPOSIT_ACCRUALS = 'Mon-Fri';
+              break;
+            case 'ETH':
+              DEPOSIT_TERM = 100;
+              INTEREST = 2.2;
+              DEPOSIT_MIN = 0.1;
+              DEPOSIT_MAX = 100;
+              SELECTED_DEPOSIT_BALANCE = 'ETH';
+              DEPOSIT_ACCRUALS = 'Mon-Fri';
+              break;
+            case 'TRX':
+              DEPOSIT_TERM = 100;
+              INTEREST = 2.2;
+              DEPOSIT_MIN = 2000;
+              DEPOSIT_MAX = 2000000;
+              SELECTED_DEPOSIT_BALANCE = 'TRX';
+              DEPOSIT_ACCRUALS = 'Mon-Fri';
+              break;
+            case 'TRON':
+              DEPOSIT_TERM = 100;
+              INTEREST = 2.2;
+              DEPOSIT_MIN = 2000;
+              DEPOSIT_MAX = 2000000;
+              SELECTED_DEPOSIT_BALANCE = 'TRX';
+              DEPOSIT_ACCRUALS = 'Mon-Fri';
+              break;
+            case 'BNB':
+              DEPOSIT_TERM = 100;
+              INTEREST = 2.2;
+              DEPOSIT_MIN = 0.5;
+              DEPOSIT_MAX = 1000;
+              SELECTED_DEPOSIT_BALANCE = 'BNB';
+              DEPOSIT_ACCRUALS = 'Mon-Fri';
+              break;
+          }
+          break;
+        case 'Crypto Pro':
+          switch (SELECTED_DEPOSIT_BALANCE) {
+            case 'BTC':
+              DEPOSIT_TERM = 100;
+              INTEREST = 2.8;
+              DEPOSIT_MIN = 10;
+              DEPOSIT_MAX = 100;
+              SELECTED_DEPOSIT_BALANCE = 'BTC';
+              DEPOSIT_ACCRUALS = 'Mon-Fri';
+              break;
+            case 'ETH':
+              DEPOSIT_TERM = 100;
+              INTEREST = 2.8;
+              DEPOSIT_MIN = 100;
+              DEPOSIT_MAX = 1000;
+              SELECTED_DEPOSIT_BALANCE = 'ETH';
+              DEPOSIT_ACCRUALS = 'Mon-Fri';
+              break;
+            case 'TRON':
+              DEPOSIT_TERM = 100;
+              INTEREST = 2.8;
+              DEPOSIT_MIN = 2000000;
+              DEPOSIT_MAX = 20000000;
+              SELECTED_DEPOSIT_BALANCE = 'TRX';
+              DEPOSIT_ACCRUALS = 'Mon-Fri';
+              break;
+            case 'TRX':
+              DEPOSIT_TERM = 100;
+              INTEREST = 2.8;
+              DEPOSIT_MIN = 2000000;
+              DEPOSIT_MAX = 20000000;
+              SELECTED_DEPOSIT_BALANCE = 'TRX';
+              DEPOSIT_ACCRUALS = 'Mon-Fri';
+              break;
+            case 'BNB':
+              DEPOSIT_TERM = 100;
+              INTEREST = 2.8;
+              DEPOSIT_MIN = 1000;
+              DEPOSIT_MAX = 10000;
+              SELECTED_DEPOSIT_BALANCE = 'BNB';
+              DEPOSIT_ACCRUALS = 'Mon-Fri';
+              break;
+          }
+          break;
+      }
+      break;
+    case 'Venture Assets':
+      switch (SELECTED_PLAN) {
+        case 'Venture Light':
+          DEPOSIT_TERM = 200;
+          INTEREST = 3;
+          DEPOSIT_MIN = 500;
+          DEPOSIT_MAX = 50000;
+          SELECTED_DEPOSIT_BALANCE = 'USD';
+          DEPOSIT_ACCRUALS = 'Everyday';
+          break;
+        case 'Venture Superiority':
+          DEPOSIT_TERM = 360;
+          INTEREST = 3.4;
+          DEPOSIT_MIN = 50000;
+          DEPOSIT_MAX = 500000;
+          SELECTED_DEPOSIT_BALANCE = 'USD';
+          DEPOSIT_ACCRUALS = 'Everyday';
+          break;
+      }
+      break;
+  }
+
+  setPannelInformation();
+
+  console.log(`Assets: ${SELECTED_ASSET}`);
+  console.log(`Plan: ${SELECTED_PLAN}`);
+  console.log(`Pay balance: ${SELECTED_DEPOSIT_BALANCE}`);
+  console.log(DEPOSIT_TERM);
+  console.log(INTEREST);
+  console.log(DEPOSIT_MIN);
+  console.log(DEPOSIT_MAX);
+  console.log(DEPOSIT_ACCRUALS);
 }
