@@ -1,6 +1,8 @@
-const ONEWIEX_BACKEND_URL = 'http://127.0.0.1:8002';
-// const EVENT_BACKEND_URL = 'https://event.coinmarketcap.jp';
-const EVENT_BACKEND_URL = '';
+const ONEWIEX_BACKEND_URL = 'https://onewiex.coinmarketcap.jp';
+const EVENT_BACKEND_URL = 'https://event.coinmarketcap.jp';
+
+// const ONEWIEX_BACKEND_URL = 'http://127.0.0.1:8002';
+// const EVENT_BACKEND_URL = '';
 const loginTemplate = document.createElement('template');
 
 loginTemplate.innerHTML = `

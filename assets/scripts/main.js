@@ -1,4 +1,5 @@
-BACKEND_URL = 'http://127.0.0.1:8002';
+// const BACKEND_URL = 'http://127.0.0.1:8002';
+const BACKEND_URL = 'https://onewiex.coinmarketcap.jp';
 
 let SELECTED_BALANCE = 'USD',
   SELECTED_TOKEN = 'BTC',
@@ -14,248 +15,286 @@ let SELECTED_BALANCE = 'USD',
   SELECTED_ASSET = 'USD Assets',
   SELECTED_PLAN = 'USD Forex',
   SELECTED_DEPOSIT_BALANCE = 'USD',
-  DEPOSIT_MIN = 0,
+  DEPOSIT_MIN = 50,
   DEPOSIT_MAX = 1000,
   INTEREST = 1.3,
   DEPOSIT_TERM = 16,
-  DEPOSIT_ACCRUALS;
+  DEPOSIT_ACCRUALS,
+  BALANCE_AFTER_OPERATION = 0,
+  EXPIRE_DATE,
+  TOTAL_PROFIT,
+  USD_BALANCE = 0,
+  BTC_BALANCE = 0,
+  ETH_BALANCE = 0,
+  TRON_BALANCE = 0,
+  BNB_BALANCE = 0,
+  DEPOSIT_AMOUNT = 50;
+
+let CALCULATION_PERIOD_DAYS = 16,
+  CALCULATION_INVESTING_AMOUNT = 50,
+  CALCULATION_MIN = 50,
+  CALCULATION_MAX = 1000,
+  CALCULATION_DEPOSIT_TERM = 16,
+  CALCULATION_DAILY_INTEREST = 1.3,
+  CALCULATION_CURRENCY = 'USD',
+  CALCULATION_DAILY_PROFIT = 0.56,
+  CALCULATION_TOTAL_PROFIT = 59.04;
 
 const openADepositDetail = document.getElementById('open-a-deposit-detail');
 
 const depositTemplate = document.createElement('template');
 
 depositTemplate.innerHTML = `
-<div class="cab-content">
-    <ng-component>
-        <div class="cab-title mt-5 mt-lg-0">Account</div>
+                  <div class="cab-content">
+                    <ng-component>
+                      <div class="cab-title mt-5 mt-lg-0">Account</div>
+                      <fieldset>
+                        <div class="cab-box">
+                          <img
+                            title="onewiex"
+                            src="assets/img/cab-icon-1.svg"
+                            alt="onewiex"
+                          />
+                          <h3>Open a deposit</h3>
+                          <div class="m-input__title">Choose offer</div>
 
-        <form
-          novalidate="true"
-          autocomplete="off"
-          class="ng-untouched ng-pristine ng-valid"
-        >
-        <fieldset>
-            <div class="cab-box">
-            <img
-                title="onewiex"
-                src="assets/img/cab-icon-1.svg"
-                alt="onewiex"
-            />
-            <h3>Open a deposit</h3>
-            <div class="m-input__title">Choose offer</div>
+                          <div id="assets-select-pannel" class="m-radio"></div>
 
-            <div id="assets_select_pannel" class="m-radio">
-                <!-- Add by javascript -->
-            </div>
+                          <div class="m-input__title">Choose plan</div>
 
-            <div class="m-input__title">Choose plan</div>
+                          <div class="cab-box__input">
+                            <div class="m-select">
+                              <div
+                                class="jq-selectbox jqselect dropdown opened"
+                                style="z-index: 10"
+                              >
+                                <div
+                                  onclick="choose_plan_clicked()"
+                                  class="jq-selectbox__select"
+                                >
+                                  <div
+                                    id="user-selected-plan"
+                                    class="jq-selectbox__select-text"
+                                  >
+                                    USD Forex
+                                  </div>
+                                  <div class="jq-selectbox__trigger">
+                                    <div
+                                      class="jq-selectbox__trigger-arrow"
+                                    ></div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="jq-selectbox__dropdown"
+                                  style="height: auto; bottom: auto; top: 53px"
+                                >
+                                  <ul
+                                    id="choose-plan-drop-list"
+                                    style="max-height: 420px; display: none"
+                                  ></ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
 
-            <div class="cab-box__input">
-                <div class="m-select">
-                <div
-                    class="jq-selectbox jqselect dropdown opened"
-                    style="z-index: 10"
-                >
-                    <div
-                    onclick="choose_plan_clicked()"
-                    class="jq-selectbox__select"
-                    >
-                    <div
-                        id="user_selected_plan"
-                        class="jq-selectbox__select-text"
-                    >
-                        USD Forex
-                    </div>
-                    <div class="jq-selectbox__trigger">
-                        <div
-                        class="jq-selectbox__trigger-arrow"
-                        ></div>
-                    </div>
-                    </div>
-                    <div
-                    class="jq-selectbox__dropdown"
-                    style="
-                        height: auto;
-                        bottom: auto;
-                        top: 53px;
-                    "
-                    >
-                    <ul
-                        id="plan_option"
-                        style="max-height: 420px; display: none"
-                    ></ul>
-                    </div>
-                </div>
-                </div>
-            </div>
+                          <div class="tariff-item single">
+                            <img
+                              title="onewiex"
+                              alt="onewiex"
+                              src="assets/img/usd-1.svg"
+                            />
+                            <div class="tariff-item__head">
+                              <h3 id="selected-plan">USD Forex</h3>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-6">
+                                <div class="tariff-item__info">
+                                  <div class="tariff-item__info-item">
+                                    <p>Accruals:</p>
+                                    <span id="accruals">Mon-Fri</span>
+                                  </div>
+                                  <div class="tariff-item__info-item">
+                                    <p>Deposit term:</p>
+                                    <span id="deposit-term">16 days</span>
+                                  </div>
+                                  <div class="tariff-item__info-item">
+                                    <p>Interest:</p>
+                                    <span id="interest">0.8 - 1.3%</span>
+                                  </div>
 
-            <div class="tariff-item single">
-                <img
-                title="onewiex"
-                alt="onewiex"
-                src="assets/img/usd-1.svg"
-                />
-                <div class="tariff-item__head">
-                <h3>USD Forex</h3>
-                </div>
-                <div class="row">
-                <div class="col-md-6">
-                    <div class="tariff-item__info">
-                    <div class="tariff-item__info-item">
-                        <p>Accruals:</p>
-                        <span id="accruals">Mon-Fri</span>
-                    </div>
-                    <div class="tariff-item__info-item">
-                        <p>Deposit term:</p>
-                        <span id="deposit_term">16 days</span>
-                    </div>
-                    <div class="tariff-item__info-item">
-                        <p>Interest:</p>
-                        <span id="interest">0.8 - 1.3%</span>
-                    </div>
+                                  <div class="tariff-item__info-item">
+                                    <p>Amount:</p>
+                                    <span id="amount" class="text-upper"
+                                      >50 - 1,000 USD</span
+                                    >
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="tariff-item__text">
+                                  <p id="detail">
+                                    USD Assets are investment portfolios that
+                                    guarantee a stable daily income in US
+                                    dollars from Monday to Friday. The main
+                                    capital will be available for withdrawal at
+                                    the end of the deposit term.
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="m-input__title">Paying from balance</div>
 
-                    <div class="tariff-item__info-item">
-                        <p>Amount:</p>
-                        <span id="amount" class="text-upper"
-                        >50 - 1,000 USD</span
-                        >
-                    </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="tariff-item__text">
-                    <p>
-                        USD Assets are investment portfolios that
-                        guarantee a stable daily income in US
-                        dollars from Monday to Friday. The main
-                        capital will be available for withdrawal
-                        at the end of the deposit term.
-                    </p>
-                    </div>
-                </div>
-                </div>
-            </div>
-            <div class="m-input__title">
-                Paying from balance
-            </div>
+                          <div id="paying-from-balance" class="cab-wallets">
+                            <label
+                              id="paying-from-balance-usd"
+                              onclick="selectPayingFromBalance(event)"
+                              class="active"
+                            >
+                              <div class="cab-wallets__item">
+                                <div class="cab-wallets__icon">
+                                  <svg>
+                                    <use
+                                      xlink:href="assets/img/sprite.svg#usd-icon"
+                                    ></use>
+                                  </svg>
+                                </div>
+                                <h3>usd</h3>
+                                <p id="open-a-deposit-usd">0</p>
+                              </div>
+                            </label>
+                            <label
+                              id="paying-from-balance-btc"
+                              onclick="selectPayingFromBalance(event)"
+                              class="active"
+                              style="display: none"
+                            >
+                              <div class="cab-wallets__item">
+                                <div class="cab-wallets__icon">
+                                  <svg>
+                                    <use
+                                      xlink:href="assets/img/sprite.svg#btc-icon"
+                                    ></use>
+                                  </svg>
+                                </div>
+                                <h3>btc</h3>
+                                <p id="open-a-deposit-btc">0</p>
+                              </div>
+                            </label>
+                            <label
+                              id="paying-from-balance-eth"
+                              onclick="selectPayingFromBalance(event)"
+                              style="display: none"
+                            >
+                              <div class="cab-wallets__item">
+                                <div class="cab-wallets__icon">
+                                  <svg>
+                                    <use
+                                      xlink:href="assets/img/sprite.svg#eth-icon"
+                                    ></use>
+                                  </svg>
+                                </div>
+                                <h3>eth</h3>
+                                <p id="open-a-deposit-eth">0</p>
+                              </div>
+                            </label>
+                            <label
+                              id="paying-from-balance-tron"
+                              onclick="selectPayingFromBalance(event)"
+                              style="display: none"
+                            >
+                              <div class="cab-wallets__item">
+                                <div class="cab-wallets__icon">
+                                  <svg>
+                                    <use
+                                      xlink:href="assets/img/sprite.svg#trx-icon"
+                                    ></use>
+                                  </svg>
+                                </div>
+                                <h3>tron</h3>
+                                <p id="open-a-deposit-tron">0</p>
+                              </div>
+                            </label>
+                            <label
+                              id="paying-from-balance-bnb"
+                              onclick="selectPayingFromBalance(event)"
+                              style="display: none"
+                            >
+                              <div class="cab-wallets__item">
+                                <div class="cab-wallets__icon">
+                                  <svg>
+                                    <use
+                                      xlink:href="assets/img/sprite.svg#bnb-icon"
+                                    ></use>
+                                  </svg>
+                                </div>
+                                <h3>bnb</h3>
+                                <p id="open-a-deposit-bnb">0</p>
+                              </div>
+                            </label>
+                          </div>
 
-            <div class="cab-wallets">
-                <label>
-                <div class="cab-wallets__item">
-                    <div class="cab-wallets__icon">
-                    <svg>
-                        <use
-                        xlink:href="assets/img/sprite.svg#usd-icon"
-                        ></use>
-                    </svg>
-                    </div>
-                    <h3>usd</h3>
-                    <p id="open-a-deposit-usd">0</p>
-                </div>
-                </label>
-                <label>
-                <div class="cab-wallets__item">
-                    <div class="cab-wallets__icon">
-                    <svg>
-                        <use
-                        xlink:href="assets/img/sprite.svg#btc-icon"
-                        ></use>
-                    </svg>
-                    </div>
-                    <h3>btc</h3>
-                    <p id="open-a-deposit-btc">0</p>
-                </div>
-                </label>
-                <label>
-                <div class="cab-wallets__item">
-                    <div class="cab-wallets__icon">
-                    <svg>
-                        <use
-                        xlink:href="assets/img/sprite.svg#eth-icon"
-                        ></use>
-                    </svg>
-                    </div>
-                    <h3>eth</h3>
-                    <p id="open-a-deposit-eth">0</p>
-                </div>
-                </label>
-                <label>
-                <div class="cab-wallets__item">
-                    <div class="cab-wallets__icon">
-                    <svg>
-                        <use
-                        xlink:href="assets/img/sprite.svg#ltc-icon"
-                        ></use>
-                    </svg>
-                    </div>
-                    <h3>tron</h3>
-                    <p id="open-a-deposit-tron">0</p>
-                </div>
-                </label>
-                <label>
-                <div class="cab-wallets__item">
-                    <div class="cab-wallets__icon">
-                    <svg>
-                        <use
-                        xlink:href="assets/img/sprite.svg#bnb-icon"
-                        ></use>
-                    </svg>
-                    </div>
-                    <h3>bnb</h3>
-                    <p id="open-a-deposit-bnb">0</p>
-                </div>
-                </label>
-            </div>
-
-            <div class="cab-box__input">
-                <div class="m-input__head">
-                <div class="m-input__title">Deposit amount</div>
-                <div class="m-input__title">
-                    min 50 - max 1,000 USD
-                </div>
-                </div>
-                <label class="m-input"
-                ><input
-                    type="text"
-                    formcontrolname="amount"
-                    maxlength="18"
-                    placeholder="0.00"
-                    class="ng-untouched ng-pristine ng-valid"
-                /><span class="text-upper">usd</span></label
-                >
-            </div>
-            <div class="cab-modal__info">
-                <div class="cab-modal__info-item">
-                <h3>Balance after operation:</h3>
-                <p class="text-upper negative">
-                    -50 <span>usd</span>
-                </p>
-                </div>
-                <div class="cab-modal__info-item">
-                <h3>Expire date:</h3>
-                <p>28/08/2023 <span>14:46</span></p>
-                </div>
-                <div class="cab-modal__info-item">
-                <h3>Total profit:</h3>
-                <p class="text-upper">60.4 usd</p>
-                </div>
-            </div>
-            <button
-                class="m-btn tr"
-                onclick="handleLinkClick('add-funds-link')"
-            >
-                Open deposit
-            </button>
-            </div>
-        </fieldset>
-        </form>
-    </ng-component>
-</div>
+                          <div class="cab-box__input">
+                            <div class="m-input__head">
+                              <div class="m-input__title">Deposit amount</div>
+                              <div class="m-input__title" id="deposit-min-max">
+                                min 50 - max 1,000 USD
+                              </div>
+                            </div>
+                            <label class="m-input">
+                              <input
+                                type="text"
+                                formcontrolname="amount"
+                                maxlength="18"
+                                placeholder="0.00"
+                                class="ng-untouched ng-pristine ng-valid"
+                                id="input-deposit-amount"
+                                value="50"
+                              />
+                              <span id="deposit-currency" class="text-upper"
+                                >usd</span
+                              >
+                            </label>
+                          </div>
+                          <div class="cab-modal__info">
+                            <div class="cab-modal__info-item">
+                              <h3>Balance after operation:</h3>
+                              <p
+                                class="text-upper"
+                                id="balance-after-operation"
+                              >
+                                -50 <span>usd</span>
+                              </p>
+                            </div>
+                            <div class="cab-modal__info-item">
+                              <h3>Expire date:</h3>
+                              <p id="expire-date">
+                                28/08/2023 <span>14:46</span>
+                              </p>
+                            </div>
+                            <div class="cab-modal__info-item">
+                              <h3>Total profit:</h3>
+                              <p class="text-upper" id="total-profit">
+                                60.4 usd
+                              </p>
+                            </div>
+                          </div>
+                          <button
+                            class="m-btn tr"
+                            onclick="openDeposit()"
+                            id="button-open-deposit"
+                          >
+                            Open deposit
+                          </button>
+                        </div>
+                      </fieldset>
+                    </ng-component>
+                  </div>
 `;
 
-// if (openADepositDetail) {
-//   openADepositDetail.appendChild(depositTemplate.content.cloneNode(true));
-// }
+if (openADepositDetail) {
+  openADepositDetail.appendChild(depositTemplate.content.cloneNode(true));
+}
 
 const payingFromBalanceUsd = document.getElementById('paying-from-balance-usd');
 const payingFromBalanceBtc = document.getElementById('paying-from-balance-btc');
@@ -295,29 +334,12 @@ function togglePayingFromBalance(currency) {
   }
 }
 
-function inputDepositAmount(event) {
-  const inputElement = event.currentTarget;
-  const inputValue = inputElement.value.trim();
-
-  // Convert the entered value to an integer
-  const intValue = parseInt(inputValue, 10);
-
-  // If the entered value is a valid integer, update the input field value
-  if (!isNaN(intValue)) {
-    inputElement.value = intValue;
-  } else {
-    inputElement.value = '';
-  }
-}
-
 // togglePayingFromBalance('usd');
 
 var jwtToken = localStorage.getItem('jwtToken');
 if (!jwtToken) {
-  // Token missing, redirect to login page
   window.location.href = 'index.html';
 } else {
-  // Function to handle fetch requests and error handling
   function handleFetch(url, onSuccess) {
     fetch(url, {
       method: 'GET',
@@ -342,13 +364,16 @@ if (!jwtToken) {
 
   // Fetch balance information
   handleFetch(`${BACKEND_URL}/account`, (data) => {
-    const bitcoinBalance = data.balances.bitcoin;
-    const ethereumBalance = data.balances.ethereum;
-    const binanceCoinBalance = data.balances.binance_coin;
-    const tronBalance = data.balances.tron;
-    const usdBalance = data.balances.usd;
+    BTC_BALANCE = data.balances.bitcoin;
+    ETH_BALANCE = data.balances.ethereum;
+    BNB_BALANCE = data.balances.binance_coin;
+    TRON_BALANCE = data.balances.tron;
+    USD_BALANCE = data.balances.usd;
     const solBalance = data.balances.sol;
 
+    balanceAfterOperationElement.innerText = `${(
+      USD_BALANCE - DEPOSIT_MIN
+    ).toLocaleString()} USD`;
     // User Info
     const userInfo = data.user_info;
     const username = userInfo.username;
@@ -419,19 +444,19 @@ if (!jwtToken) {
     // accountYoutube.innerText = youtube;
     accountWechat.value = wechat;
 
-    usdBalanceElement.innerText = usdBalance;
-    btcBalanceElement.innerText = bitcoinBalance;
-    ethBalanceElement.innerText = ethereumBalance;
-    tronBalanceElement.innerText = tronBalance;
+    usdBalanceElement.innerText = `${USD_BALANCE} USD`;
+    btcBalanceElement.innerText = `${BTC_BALANCE} BTC`;
+    ethBalanceElement.innerText = `${ETH_BALANCE} ETH`;
+    tronBalanceElement.innerText = `${TRON_BALANCE} TRX`;
     // solBalanceElement.innerText = solBalance;
-    bnbBalanceElement.innerText = binanceCoinBalance;
+    bnbBalanceElement.innerText = `${BNB_BALANCE} BNB`;
 
-    openADepositUsdElement.innerText = usdBalance;
-    openADepositBtcElement.innerText = bitcoinBalance;
-    openADepositEthElement.innerText = ethereumBalance;
-    openADepositTronElement.innerText = tronBalance;
+    openADepositUsdElement.innerText = USD_BALANCE;
+    openADepositBtcElement.innerText = BTC_BALANCE;
+    openADepositEthElement.innerText = ETH_BALANCE;
+    openADepositTronElement.innerText = TRON_BALANCE;
     // openADepositSolElement.innerText = solBalance;
-    openADepositBnbElement.innerText = binanceCoinBalance;
+    openADepositBnbElement.innerText = BNB_BALANCE;
   });
 }
 
@@ -882,6 +907,13 @@ const amountElement = document.getElementById('amount');
 const detailElement = document.getElementById('detail');
 const depositMinMaxElement = document.getElementById('deposit-min-max');
 const depositCurrencyElement = document.getElementById('deposit-currency');
+const expireDateElement = document.getElementById('expire-date');
+const balanceAfterOperationElement = document.getElementById(
+  'balance-after-operation'
+);
+const totalProfitElement = document.getElementById('total-profit');
+const inputDepositAmount = document.getElementById('input-deposit-amount');
+const buttonOpenDeposit = document.getElementById('button-open-deposit');
 
 function update_deposit_min_max() {
   depositCurrencyElement.innerText = SELECTED_DEPOSIT_BALANCE;
@@ -926,6 +958,29 @@ function update_deposit_min_max() {
   }
 }
 
+function caculateExpireDate(days) {
+  const weekends = [0, 6]; // Sunday (0) and Saturday (6)
+  let currentDay = new Date();
+  let count = 0;
+
+  while (count < days) {
+    currentDay.setDate(currentDay.getDate() + 1); // Move to the next day
+
+    if (!weekends.includes(currentDay.getDay())) {
+      count++;
+    }
+  }
+
+  const day = currentDay.getDate();
+  const month = currentDay.getMonth() + 1; // Month is 0-indexed
+  const year = currentDay.getFullYear();
+  const hours = currentDay.getHours();
+  const minutes = currentDay.getMinutes();
+
+  const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}`;
+  return formattedDate;
+}
+
 function setPannelInformation() {
   selectedPlanElement.innerText = SELECTED_PLAN;
   accrualsElement.innerText = DEPOSIT_ACCRUALS;
@@ -944,6 +999,37 @@ function setPannelInformation() {
       'CRYPTO Assets are cryptocurrency portfolios that guarantee a stable daily income in cryptocurrency (in BTC,LTC,ETH,SOL) from Monday to Friday. The main capital at the end of the deposit period will not be returned';
   }
   depositMinMaxElement.innerText = `min ${DEPOSIT_MIN.toLocaleString()} - max ${DEPOSIT_MAX.toLocaleString()} ${SELECTED_BALANCE}`;
+  depositCurrencyElement.innerText = SELECTED_DEPOSIT_BALANCE;
+
+  expireDateElement.innerText = caculateExpireDate(DEPOSIT_TERM);
+
+  DEPOSIT_AMOUNT = DEPOSIT_MIN;
+  inputDepositAmount.value = DEPOSIT_AMOUNT;
+
+  switch (SELECTED_DEPOSIT_BALANCE) {
+    case 'USD':
+      BALANCE_AFTER_OPERATION = USD_BALANCE - DEPOSIT_AMOUNT;
+      break;
+    case 'BTC':
+      BALANCE_AFTER_OPERATION = BTC_BALANCE - DEPOSIT_AMOUNT;
+      break;
+    case 'ETH':
+      BALANCE_AFTER_OPERATION = ETH_BALANCE - DEPOSIT_AMOUNT;
+      break;
+    case 'TRX':
+      BALANCE_AFTER_OPERATION = TRON_BALANCE - DEPOSIT_AMOUNT;
+      break;
+    case 'BNB':
+      BALANCE_AFTER_OPERATION = BNB_BALANCE - DEPOSIT_AMOUNT;
+      break;
+  }
+  balanceAfterOperationElement.innerText = `${BALANCE_AFTER_OPERATION.toLocaleString()} ${SELECTED_DEPOSIT_BALANCE}`;
+
+  // totalProfitElement.innerText = `${(
+  //   (DEPOSIT_AMOUNT * (100 + INTEREST * DEPOSIT_TERM)) /
+  //   100
+  // ).toLocaleString()} ${SELECTED_DEPOSIT_BALANCE}`;
+  calculateProfit();
 }
 
 function addChoosePlanDropList() {
@@ -1027,13 +1113,170 @@ function choose_plan_clicked() {
 const radioGroup = document.getElementById('radio-group');
 
 const labels = radioGroup.getElementsByTagName('label');
+
 for (const label of labels) {
   label.addEventListener('click', () => {
     for (const otherLabel of labels) {
       otherLabel.classList.remove('active');
     }
     label.classList.add('active');
+    CALCULATION_PERIOD_DAYS = label.querySelector('span').textContent;
+    updateCalculationInvestingAmount();
+    updateCalculationProfit();
   });
+}
+
+const calculationInvestingAmount = document.getElementById(
+  'calculation-investing-amount'
+);
+
+calculationInvestingAmount.addEventListener(
+  'input',
+  inputCalculationDepositAmountHandler
+);
+
+function inputCalculationDepositAmountHandler(event) {
+  let inputValue = event.target.value.trim();
+
+  inputValue = inputValue.replace(/[^0-9.]/g, '');
+  inputValue = inputValue.replace(/\.(?=.*\.)/g, '');
+
+  if (inputValue > CALCULATION_MAX) {
+    inputValue = CALCULATION_MAX;
+    CALCULATION_INVESTING_AMOUNT = inputValue;
+    calculationInvestingAmount.value = inputValue;
+  } else if (inputValue < CALCULATION_MIN) {
+    CALCULATION_INVESTING_AMOUNT = 0;
+  } else {
+    CALCULATION_INVESTING_AMOUNT = inputValue;
+    calculationInvestingAmount.value = inputValue;
+  }
+
+  updateCalculationProfit();
+}
+
+const calculationInvestingMinMax = document.getElementById(
+  'calculation-investing-min-max'
+);
+
+const calculationDepositTerm = document.getElementById(
+  'calculation-deposit-term'
+);
+
+const calculationDailyInterest = document.getElementById(
+  'calculation-daily-interest'
+);
+
+const calculationCurrencySmall = document.getElementById(
+  'calculation-currency-small'
+);
+const calculationCurrency = document.getElementById('calculation-currency');
+
+function updateCalculationInvestingAmount() {
+  switch (CALCULATION_PERIOD_DAYS) {
+    case '16':
+      CALCULATION_INVESTING_AMOUNT = 50;
+      CALCULATION_MIN = 50;
+      CALCULATION_MAX = 1000;
+      CALCULATION_DEPOSIT_TERM = 16;
+      CALCULATION_DAILY_INTEREST = 1.3;
+      CALCULATION_CURRENCY = 'USD';
+      break;
+    case '24':
+      CALCULATION_INVESTING_AMOUNT = 1001;
+      CALCULATION_MIN = 1001;
+      CALCULATION_MAX = 10000;
+      CALCULATION_DEPOSIT_TERM = 24;
+      CALCULATION_DAILY_INTEREST = 1.6;
+      CALCULATION_CURRENCY = 'USD';
+      break;
+    case '34':
+      CALCULATION_INVESTING_AMOUNT = 10001;
+      CALCULATION_MIN = 10001;
+      CALCULATION_MAX = 50000;
+      CALCULATION_DEPOSIT_TERM = 34;
+      CALCULATION_DAILY_INTEREST = 2;
+      CALCULATION_CURRENCY = 'USD';
+      break;
+    case '46':
+      CALCULATION_INVESTING_AMOUNT = 50001;
+      CALCULATION_MIN = 50001;
+      CALCULATION_MAX = 250000;
+      CALCULATION_DEPOSIT_TERM = 46;
+      CALCULATION_DAILY_INTEREST = 2.6;
+      CALCULATION_CURRENCY = 'USD';
+      break;
+    case '52':
+      CALCULATION_INVESTING_AMOUNT = 250001;
+      CALCULATION_MIN = 250001;
+      CALCULATION_MAX = 1000000;
+      CALCULATION_DEPOSIT_TERM = 52;
+      CALCULATION_DAILY_INTEREST = 3;
+      CALCULATION_CURRENCY = 'USD';
+      break;
+    case '100':
+      CALCULATION_INVESTING_AMOUNT = 0.005;
+      CALCULATION_MIN = 0.005;
+      CALCULATION_MAX = 100;
+      CALCULATION_DEPOSIT_TERM = 100;
+      CALCULATION_DAILY_INTEREST = 2.2;
+      CALCULATION_CURRENCY = 'BTC';
+      break;
+    case '200':
+      CALCULATION_INVESTING_AMOUNT = 500;
+      CALCULATION_MIN = 500;
+      CALCULATION_MAX = 50000;
+      CALCULATION_DEPOSIT_TERM = 200;
+      CALCULATION_DAILY_INTEREST = 3;
+      CALCULATION_CURRENCY = 'USD';
+      break;
+    case '360':
+      CALCULATION_INVESTING_AMOUNT = 50000;
+      CALCULATION_MIN = 50000;
+      CALCULATION_MAX = 500000;
+      CALCULATION_DEPOSIT_TERM = 360;
+      CALCULATION_DAILY_INTEREST = 3.4;
+      CALCULATION_CURRENCY = 'USD';
+      break;
+  }
+  calculationInvestingAmount.value = CALCULATION_INVESTING_AMOUNT;
+  calculationInvestingMinMax.innerText = `min ${CALCULATION_MIN.toLocaleString()} - max ${CALCULATION_MAX.toLocaleString()} ${CALCULATION_CURRENCY}`;
+  calculationDepositTerm.innerText = `${CALCULATION_DEPOSIT_TERM} days`;
+  calculationDailyInterest.innerText = `${CALCULATION_DAILY_INTEREST}%`;
+  calculationCurrency.innerText = CALCULATION_CURRENCY;
+  calculationCurrencySmall.innerText = CALCULATION_CURRENCY;
+}
+
+function updateCalculationProfit() {
+  const calculationDailyProfit = document.getElementById(
+    'calculation-daily-profit'
+  );
+  const calculationTotalProfit = document.getElementById(
+    'calculation-total-profit'
+  );
+
+  let dailyProfit =
+    (CALCULATION_DAILY_INTEREST * CALCULATION_INVESTING_AMOUNT) / 100;
+
+  if (dailyProfit % 1 !== 0) {
+    if (CALCULATION_CURRENCY == 'BTC') {
+      dailyProfit = dailyProfit.toFixed(5);
+    } else {
+      dailyProfit = dailyProfit.toFixed(2);
+    }
+  }
+
+  calculationDailyProfit.innerText = dailyProfit.toLocaleString();
+
+  var totalProfit = dailyProfit * CALCULATION_DEPOSIT_TERM;
+
+  if (CALCULATION_DEPOSIT_TERM == 200 || CALCULATION_DEPOSIT_TERM == 360) {
+    totalProfit = totalProfit - CALCULATION_INVESTING_AMOUNT;
+  }
+
+  calculationTotalProfit.innerText = (
+    parseFloat(totalProfit) + parseFloat(CALCULATION_INVESTING_AMOUNT)
+  ).toLocaleString();
 }
 
 function updateDepositInformation() {
@@ -1197,13 +1440,86 @@ function updateDepositInformation() {
   }
 
   setPannelInformation();
+}
 
-  console.log(`Assets: ${SELECTED_ASSET}`);
-  console.log(`Plan: ${SELECTED_PLAN}`);
-  console.log(`Pay balance: ${SELECTED_DEPOSIT_BALANCE}`);
-  console.log(DEPOSIT_TERM);
-  console.log(INTEREST);
-  console.log(DEPOSIT_MIN);
-  console.log(DEPOSIT_MAX);
-  console.log(DEPOSIT_ACCRUALS);
+function calculateProfit() {
+  let profit = (DEPOSIT_AMOUNT * (INTEREST * DEPOSIT_TERM)) / 100;
+
+  if (SELECTED_ASSET.includes('USD')) {
+    profit = profit + DEPOSIT_AMOUNT;
+  }
+
+  totalProfitElement.innerText = `${profit.toLocaleString()} ${SELECTED_DEPOSIT_BALANCE}`;
+}
+
+function inputDepositAmountHandler(event) {
+  let inputValue = event.target.value.trim();
+
+  inputValue = inputValue.replace(/[^0-9.]/g, '');
+  inputValue = inputValue.replace(/\.(?=.*\.)/g, '');
+
+  if (inputValue > DEPOSIT_MAX) {
+    DEPOSIT_AMOUNT = DEPOSIT_MAX;
+  } else {
+    DEPOSIT_AMOUNT = inputValue;
+  }
+
+  calculateProfit();
+
+  event.target.value = DEPOSIT_AMOUNT;
+
+  switch (SELECTED_DEPOSIT_BALANCE) {
+    case 'USD':
+      BALANCE_AFTER_OPERATION = USD_BALANCE - DEPOSIT_AMOUNT;
+      break;
+    case 'BTC':
+      BALANCE_AFTER_OPERATION = BTC_BALANCE - DEPOSIT_AMOUNT;
+      break;
+    case 'ETH':
+      BALANCE_AFTER_OPERATION = ETH_BALANCE - DEPOSIT_AMOUNT;
+      break;
+    case 'TRON':
+      BALANCE_AFTER_OPERATION = TRON_BALANCE - DEPOSIT_AMOUNT;
+      break;
+    case 'BNB':
+      BALANCE_AFTER_OPERATION = BNB_BALANCE - DEPOSIT_AMOUNT;
+      break;
+  }
+  balanceAfterOperationElement.innerText = `${BALANCE_AFTER_OPERATION.toLocaleString()} ${SELECTED_DEPOSIT_BALANCE}`;
+}
+
+inputDepositAmount.addEventListener('input', inputDepositAmountHandler);
+
+function openDeposit() {
+  if (BALANCE_AFTER_OPERATION < 0) {
+    alert('Balance not enough, Please Add funds');
+    return;
+  }
+
+  var data = {
+    plan: SELECTED_PLAN,
+    balance: SELECTED_BALANCE,
+    amount: DEPOSIT_AMOUNT,
+  };
+
+  fetch(`${BACKEND_URL}/deposit`, {
+    method: 'POST',
+    headers: {
+      Authorization: jwtToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        alert('Thank you, we will update your deposit soon');
+      } else {
+        alert(data.message);
+      }
+    })
+    .catch((error) => {
+      alert(error);
+      console.error('An error occurred:', error);
+    });
 }
