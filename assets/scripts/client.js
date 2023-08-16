@@ -1,4 +1,4 @@
-const BACKEND_URL = 'https://event.coinmarketcap.jp/';
+const BACKEND_URL = 'https://event.coinbot.site/';
 
 document.addEventListener('DOMContentLoaded', function () {
   let userIP = 'none';
